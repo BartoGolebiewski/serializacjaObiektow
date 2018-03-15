@@ -1,67 +1,58 @@
 
-package polawyboru;
+package serializacjaobiektow;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
-public class PolaWyboru extends JFrame
+
+
+import java.io.*;
+
+public class SerializacjaObiektow
 {
-    public PolaWyboru()
+
+    
+    public static void main(String[] args)
     {
-        initComponents();
-    }
-    public void initComponents()
-    {
-        this.setTitle("Pola Wyboru");
-        this.setBounds(300, 300, 300, 200);
-        
-        etykieta.setFont(new Font("Monospaced", Font.PLAIN, 25));
-        
-        ActionListener sluchacz = new CheckBoxHanlder();
-        pogrubiony.addActionListener(sluchacz);
-        pochylony.addActionListener(sluchacz);
-        
-        panel2.add(etykieta);
-        panel1.add(pogrubiony);
-        panel1.add(pochylony);
+        Towar[] towar = new Towar[3];
+
+        towar[0] = new Towar();
+        towar[1] = new Towar(29.0,"Video kurs Java");
+        towar[2] = new Towar(39.0,"Video kurs C++", 2008, 11, 21);
         
         
-        this.getContentPane().add(panel1, BorderLayout.NORTH);
-        this.getContentPane().add(panel2, BorderLayout.CENTER);
-        
-        this.setDefaultCloseOperation(3);
-        
-    }
-    
-    JPanel panel1 = new JPanel();
-    JPanel panel2 = new JPanel();
-    
-    
-    JCheckBox pogrubiony = new JCheckBox("Pogrubiony");
-    JCheckBox pochylony = new JCheckBox("Pochylony");
-   
-    JLabel etykieta = new JLabel("Jestem graczem");
-    
-    
-    public class CheckBoxHanlder implements ActionListener
-    {
-        public void actionPerformed(ActionEvent ae)
+        try
         {
-            int style = Font.PLAIN;
+            ObjectOutputStream outS = new ObjectOutputStream(new FileOutputStream("baza.txt"));
             
-            if (pogrubiony.isSelected()) style += Font.BOLD;
-            if (pochylony.isSelected()) style += Font.ITALIC;
+            outS.writeObject(towar);
+            
+            outS.close();
+            
+            ObjectInputStream inS = new ObjectInputStream(new FileInputStream("baza.txt"));
+            
+            Towar[] a = (Towar[])inS.readObject();
+            
+            for(int i=0;i<a.length;i++)
+            {
+             System.out.println(a[i].pobierzNazwe());
+
+            }
             
             
-            etykieta.setFont(new Font(etykieta.getFont().getFamily(), style, etykieta.getFont().getSize()));
-        }
-         
+            inS.close();
+
         
-    }
-    public static void main(String[] args) 
-    {
-     new PolaWyboru().setVisible(true);
+        }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+            
+        }
+                catch (ClassNotFoundException e)
+        {
+            System.out.println(e.getMessage());
+            
+        }
+        
     }
     
 }
